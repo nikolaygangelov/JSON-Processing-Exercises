@@ -21,14 +21,14 @@ namespace ProductShop
          public static string GetSoldProducts(ProductShopContext context)
         {
 
-	          // turning needed info about books into a collection using anonymous object
-            // using less data 
+	// turning needed info about books into a collection using anonymous object
+        // using less data 
             
             var users = context.Users
                 .Where(u => u.ProductsSold.Any(p => p.BuyerId != null))
                 .Select(u => new
                 {
-		                // using identical properties in order to map successfully
+	// using identical properties in order to map successfully
 
                     firstName = u.FirstName,
                     lastName = u.LastName,
@@ -47,8 +47,8 @@ namespace ProductShop
                 .ThenBy(u => u.firstName)
                 .ToArray();
 	
-      	    // Serialize method needs object to convert/map
-      	    // adding Formatting for better reading 
+      	 // Serialize method needs object to convert/map
+      	 // adding Formatting for better reading 
             return JsonConvert.SerializeObject(users, Formatting.Indented);
         }
     }
