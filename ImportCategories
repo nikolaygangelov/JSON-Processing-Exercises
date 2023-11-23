@@ -1,0 +1,46 @@
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using ProductShop.Data;
+using ProductShop.Models;
+using System.ComponentModel;
+
+namespace ProductShop
+{
+    public class StartUp
+    {
+        public static void Main()
+        {
+            string inputJson = @"..\..\..\Datasets\categories.json";
+
+            ProductShopContext context = new ProductShopContext();
+
+            Console.WriteLine(ImportCategories(context, inputJson));
+
+        }
+
+        public static string ImportCategories(ProductShopContext context, string inputJson)
+        {
+            // mapping file content into array of Category using passed string
+            var categoriesArray = JsonConvert.DeserializeObject<Category[]>(File.ReadAllText(inputJson));
+
+
+            var validCategoriesArray = categoriesArray
+                .Where(c => c.Name is not null)
+                .ToArray();
+              
+            // filtered array needs to be validated
+            if (validCategoriesArray != null)
+            {
+		            // AddRange method allows you to add a collection to context
+                context.AddRange(validCategoriesArray);
+
+                context.SaveChanges();
+
+                return $"Successfully imported {validCategoriesArray.Length}";
+            }
+
+            return "Successfully imported 0";
+        }
+    }
+}
