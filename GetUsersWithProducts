@@ -1,0 +1,72 @@
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using ProductShop.Data;
+using ProductShop.Models;
+using System.ComponentModel;
+
+namespace ProductShop
+{
+    public class StartUp
+    {
+        public static void Main()
+        {
+
+            ProductShopContext context = new ProductShopContext();
+
+            Console.WriteLine(GetUsersWithProducts(context));
+
+        }
+
+        public static string GetUsersWithProducts(ProductShopContext context)
+        {
+
+	    // turning needed info about books into a collection using anonymous object
+      // using less data 
+            var users = context.Users
+                .Where(u => u.ProductsSold.Any(p => p.BuyerId != null))
+                .Select(u => new
+                {
+                    firstName = u.FirstName,
+                    lastName = u.LastName,
+                    age = u.Age,
+                    soldProducts = u.ProductsSold
+                        .Where(p => p.BuyerId != null)
+                        .Select(p => new
+                        {
+                            name = p.Name,
+                            price = p.Price
+                        }).ToArray()
+                })
+                    .OrderByDescending(u => u.soldProducts.Count())
+                    .ToArray();
+		
+	    // nesting in object to achieve required property and identation
+            var output = new
+            {
+                usersCount = users.Count(),
+                users = users.Select(u => new
+                {
+                    u.firstName,
+                    u.lastName,
+                    u.age,
+                    soldProducts = new
+                    {
+                         count = u.soldProducts.Count(),
+                         products = u.soldProducts
+                    }
+                })
+            };
+
+      // Serialize method needs object to convert/map
+	    // adding Formatting for better reading using JsonSerializerSettings
+	    // manage null values bahavior using JsonSerializerSettings
+
+            return JsonConvert.SerializeObject(output, new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                NullValueHandling = NullValueHandling.Ignore
+            });
+        }
+    }
+}
