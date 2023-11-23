@@ -1,0 +1,43 @@
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using ProductShop.Data;
+using ProductShop.Models;
+using System.ComponentModel;
+
+namespace ProductShop
+{
+    public class StartUp
+    {
+        public static void Main()
+        {
+
+            ProductShopContext context = new ProductShopContext();
+
+            Console.WriteLine(GetCategoriesByProductsCount(context));
+
+        }
+
+        public static string GetCategoriesByProductsCount(ProductShopContext context)
+        {
+	          // turning needed info about books into a collection using anonymous object
+            // using less data 
+            var categoriesByProdCount = context.Categories
+                .Select(c => new
+                {
+		                // using identical properties in order to map successfully
+
+                    category = c.Name,
+                    productsCount = c.CategoriesProducts.Count,
+                    averagePrice = c.CategoriesProducts.Average(p => p.Product.Price).ToString("f2"),
+                    totalRevenue = c.CategoriesProducts.Sum(p => p.Product.Price).ToString("f2")
+                })
+                .OrderByDescending(cp => cp.productsCount)
+                .ToArray();
+
+      	    // Serialize method needs object to convert/map
+      	    // adding Formatting for better reading 
+            return JsonConvert.SerializeObject(categoriesByProdCount, Formatting.Indented);
+        }
+    }
+}
