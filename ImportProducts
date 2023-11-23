@@ -12,7 +12,9 @@ namespace ProductShop
         public static void Main()
         {
             string inputJson = @"..\..\..\Datasets\products.json";
-    
+
+            ProductShopContext context = new ProductShopContext();
+
             Console.WriteLine(ImportProducts(context, inputJson));
             
         }
