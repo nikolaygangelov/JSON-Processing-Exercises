@@ -21,7 +21,7 @@ namespace ProductShop
 
         public static string ImportCategories(ProductShopContext context, string inputJson)
         {
-            // mapping file content into array of Category using passed string
+        // mapping file content into array of Category using passed string
             var categoriesArray = JsonConvert.DeserializeObject<Category[]>(File.ReadAllText(inputJson));
 
 
@@ -29,10 +29,10 @@ namespace ProductShop
                 .Where(c => c.Name is not null)
                 .ToArray();
               
-            // filtered array needs to be validated
+        // filtered array needs to be validated
             if (validCategoriesArray != null)
             {
-		            // AddRange method allows you to add a collection to context
+	// AddRange method allows you to add a collection to context
                 context.AddRange(validCategoriesArray);
 
                 context.SaveChanges();
