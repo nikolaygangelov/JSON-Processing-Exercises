@@ -1,0 +1,33 @@
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using ProductShop.Data;
+using ProductShop.Models;
+using System.ComponentModel;
+
+namespace ProductShop
+{
+    public class StartUp
+    {
+        public static void Main()
+        {
+            string inputJson = @"..\..\..\Datasets\products.json";
+    
+            Console.WriteLine(ImportProducts(context, inputJson));
+            
+        }
+
+        public static string ImportProducts(ProductShopContext context, string inputJson)
+        {
+            // mapping file content into array of Product using passed string
+            var productsArray = JsonConvert.DeserializeObject<Product[]>(File.ReadAllText(inputJson));
+
+            // AddRange method allows you to add a collection to context
+            context.AddRange(productsArray);
+
+            context.SaveChanges();
+
+            return $"Successfully imported {productsArray.Length}";
+        }
+    }
+}
