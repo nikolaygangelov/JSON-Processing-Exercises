@@ -21,7 +21,7 @@ namespace ProductShop
         public static string GetUsersWithProducts(ProductShopContext context)
         {
 
-	    // turning needed info about books into a collection using anonymous object
+      // turning needed info about books into a collection using anonymous object
       // using less data 
             var users = context.Users
                 .Where(u => u.ProductsSold.Any(p => p.BuyerId != null))
@@ -41,7 +41,7 @@ namespace ProductShop
                     .OrderByDescending(u => u.soldProducts.Count())
                     .ToArray();
 		
-	    // nesting in object to achieve required property and identation
+	// nesting in object to achieve required property and identation
             var output = new
             {
                 usersCount = users.Count(),
@@ -58,9 +58,9 @@ namespace ProductShop
                 })
             };
 
-      // Serialize method needs object to convert/map
-	    // adding Formatting for better reading using JsonSerializerSettings
-	    // manage null values bahavior using JsonSerializerSettings
+      	// Serialize method needs object to convert/map
+	// adding Formatting for better reading using JsonSerializerSettings
+	// manage null values bahavior using JsonSerializerSettings
 
             return JsonConvert.SerializeObject(output, new JsonSerializerSettings
             {
