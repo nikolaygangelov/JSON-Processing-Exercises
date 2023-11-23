@@ -21,10 +21,10 @@ namespace ProductShop
 
         public static string ImportProducts(ProductShopContext context, string inputJson)
         {
-            // mapping file content into array of Product using passed string
+    // mapping file content into array of Product using passed string
             var productsArray = JsonConvert.DeserializeObject<Product[]>(File.ReadAllText(inputJson));
 
-            // AddRange method allows you to add a collection to context
+    // AddRange method allows you to add a collection to context
             context.AddRange(productsArray);
 
             context.SaveChanges();
